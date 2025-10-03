@@ -1,8 +1,8 @@
 import logging
 import logging.handlers
-from queue import Queue
 import sys
 from pathlib import Path
+from queue import Queue
 
 
 def setup_logging() -> logging.handlers.QueueListener:

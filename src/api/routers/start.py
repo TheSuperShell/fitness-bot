@@ -1,8 +1,7 @@
 from aiogram import Router
-from aiogram.types import Message
-from aiogram.methods.send_message import SendMessage
 from aiogram.filters import CommandStart
-
+from aiogram.methods.send_message import SendMessage
+from aiogram.types import Message
 
 router = Router(name=__name__)
 

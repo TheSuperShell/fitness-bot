@@ -7,5 +7,31 @@ requires-python = ">=3.12"
 dependencies = [
     "aiogram>=3.22.0",
     "asyncio>=4.0.0",
+    "asyncpg>=0.30.0",
+    "pydantic>=2.11.9",
     "python-dotenv>=1.1.1",
+    "sqlalchemy[asyncio]>=2.0.43",
+    "sqlmodel>=0.0.25",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "UP",
+    "B",
+    "SIM",
+    "I"
+]
+
+[tool.mypy]
+pretty = true
+ignore_missing_imports = true
+
+[dependency-groups]
+dev = [
+    "mypy>=1.18.2",
+    "pytest>=8.4.2",
+    "pytest-cov>=7.0.0",
+    "pytest-xdist>=3.8.0",
 ]

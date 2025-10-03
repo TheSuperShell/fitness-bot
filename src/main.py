@@ -1,11 +1,12 @@
 import asyncio
+
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from config import BOT_API_KEY
-from logger import setup_logging, get_logger
 from api.routers import start_router
+from config import BOT_API_KEY
+from logger import get_logger, setup_logging
 
 
 async def startup_event(dispatcher: Dispatcher) -> None:
