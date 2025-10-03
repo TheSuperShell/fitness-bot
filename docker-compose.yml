@@ -1,0 +1,27 @@
+version: "2.39.2"
+
+services:
+  bot:
+    build:
+      context: .
+    volumes:
+      - ./logs:/bot/logs
+      - ./src:/bot/src
+    env_file:
+      - ./env/bot.env
+    depends_on:
+      - db
+  db:
+    image: postgres
+    restart: on-failure
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: bot
+    ports:
+      - 5432:5432
+    volumes:
+      - botdata:/var/lib/postgresql/data
+    
+volumes:
+  botdata:

@@ -7,7 +7,7 @@ WORKDIR /bot
 COPY ./pyproject.toml .
 COPY ./uv.lock .
 
-RUN uv sync --dev --locked
+RUN uv sync --locked
 
 FROM python:3.12-slim-trixie AS production
 
