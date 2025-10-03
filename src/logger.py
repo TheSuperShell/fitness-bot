@@ -6,7 +6,7 @@ from queue import Queue
 
 
 def setup_logging() -> logging.handlers.QueueListener:
-    lq = Queue(maxsize=10000)
+    lq: Queue = Queue(maxsize=10000)
     queue_handler = logging.handlers.QueueHandler(lq)
     queue_handler.setLevel(logging.DEBUG)
 

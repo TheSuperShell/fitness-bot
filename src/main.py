@@ -6,16 +6,19 @@ from aiogram.enums import ParseMode
 
 from api.routers import start_router
 from config import BOT_API_KEY
+from db.session import async_engine, startup
 from logger import get_logger, setup_logging
 
 
 async def startup_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"] = setup_logging()
     dispatcher["logger"] = get_logger()
+    await startup()
 
 
 async def shutdown_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"].stop()
+    await async_engine.dispose()
 
 
 async def main() -> None:
