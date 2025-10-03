@@ -1,0 +1,7 @@
+[INFO|2025-10-03 20:24:55,513|dispatcher|L566] Start polling
+[INFO|2025-10-03 20:24:55,715|dispatcher|L363] Run polling for bot @thesupershell_fitness_bot_bot id=8461243368 - 'Fitness Bot (dev)'
+[INFO|2025-10-03 20:33:07,766|dispatcher|L594] Polling stopped
+[INFO|2025-10-03 20:34:07,691|dispatcher|L566] Start polling
+[INFO|2025-10-03 20:34:07,890|dispatcher|L363] Run polling for bot @thesupershell_fitness_bot_bot id=8461243368 - 'Fitness Bot (dev)'
+[INFO|2025-10-03 20:34:13,371|main|L22] Just a test log
+[INFO|2025-10-03 20:34:13,372|dispatcher|L172] Update id=942559682 is handled. Duration 0 ms by bot id=8461243368
