@@ -5,20 +5,23 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from api.routers import start_router
-from config import BOT_API_KEY
-from db.session import async_engine, startup
+from config import config
+from db.session import async_engine, db_startup, session_maker
 from logger import get_logger, setup_logging
 
 
 async def startup_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"] = setup_logging()
     dispatcher["logger"] = get_logger()
-    await startup()
+    dispatcher["session_maker"] = session_maker
+    await db_startup()
+    dispatcher["logger"].info("startup completed")
 
 
 async def shutdown_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"].stop()
     await async_engine.dispose()
+    dispatcher["logger"].info("shutown completed")
 
 
 async def main() -> None:
@@ -27,7 +30,7 @@ async def main() -> None:
     dp.shutdown.register(shutdown_event)
     dp.include_routers(start_router)
     bot = Bot(
-        token=BOT_API_KEY,
+        token=config.bot_api_key,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
     )
     await dp.start_polling(bot)
