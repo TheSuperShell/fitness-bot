@@ -35,7 +35,8 @@ async def main() -> None:
     dp.include_routers(start_router)
     dp.error.register(
         no_user_error,
-        (ExceptionTypeFilter(NoUserError)) & (F.update.message.as_("message")),
+        ExceptionTypeFilter(NoUserError),
+        F.update.message,
     )
     bot = Bot(
         token=config.bot_api_key,
