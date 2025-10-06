@@ -17,4 +17,7 @@ async def start(
 ) -> SendMessage:
     telegram_user = get_telegram_user(message)
     user = await get_or_create_user(telegram_user, session_maker, logger)
+    logger.info(
+        f"loaded user {user.telegram_id}; amount of records: {len(user.records)}"
+    )
     return message.answer(f"Hello, {user.full_name}")
