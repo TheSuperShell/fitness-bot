@@ -6,11 +6,16 @@ services:
       context: .
     volumes:
       - ./logs:/bot/logs
-      - ./src:/bot/src
+      # - ./src:/bot/src
     env_file:
       - ./.env
     depends_on:
       - db
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./src
+          target: /bot/src
   db:
     image: postgres
     restart: on-failure
