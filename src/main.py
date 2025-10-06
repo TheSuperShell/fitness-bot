@@ -3,11 +3,15 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.filters import ExceptionTypeFilter
+from magic_filter import F
 
 from api.routers import start_router
 from config import config
 from db.session import async_engine, db_startup, session_maker
 from logger import get_logger, setup_logging
+from middleware.main import no_user_error
+from models.user import NoUserError
 
 
 async def startup_event(dispatcher: Dispatcher) -> None:
@@ -29,6 +33,10 @@ async def main() -> None:
     dp.startup.register(startup_event)
     dp.shutdown.register(shutdown_event)
     dp.include_routers(start_router)
+    dp.error.register(
+        no_user_error,
+        (ExceptionTypeFilter(NoUserError)) & (F.update.message.as_("message")),
+    )
     bot = Bot(
         token=config.bot_api_key,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
