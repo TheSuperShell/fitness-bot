@@ -6,11 +6,11 @@ from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
 from magic_filter import F
 
-from api.routers import start_router
+from api.routers import general_router, start_router, stats_router
 from config import config
 from db.session import async_engine, db_startup, session_maker
 from logger import get_logger, setup_logging
-from middleware.main import no_user_error
+from middleware.general import no_user_error, other_exceptions
 from models.user import NoUserError
 
 
@@ -32,12 +32,13 @@ async def main() -> None:
     dp = Dispatcher()
     dp.startup.register(startup_event)
     dp.shutdown.register(shutdown_event)
-    dp.include_routers(start_router)
+    dp.include_routers(general_router, start_router, stats_router)
     dp.error.register(
         no_user_error,
         ExceptionTypeFilter(NoUserError),
         F.update.message,
     )
+    dp.error.register(other_exceptions)
     bot = Bot(
         token=config.bot_api_key,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),

@@ -4,11 +4,33 @@ from typing import Annotated
 from sqlalchemy import Column, DateTime
 from sqlmodel import Field, SQLModel
 
+from config import config
 from utils.time import current_timestamp
 
-Weight = Annotated[float, Field(ge=0, le=500, description="Body Weight, kg")]
-StatRatio = Annotated[float, Field(ge=0, le=1, description="Stat Ratio, %")]
-Height = Annotated[float, Field(ge=10, le=300, description="Height, cm")]
+Weight = Annotated[
+    float,
+    Field(
+        ge=config.weight_lower_limit,
+        le=config.weight_upper_limit,
+        description="Body Weight, kg",
+    ),
+]
+StatRatio = Annotated[
+    float,
+    Field(
+        ge=0,
+        le=1,
+        description="Stat Ratio, %",
+    ),
+]
+Height = Annotated[
+    float,
+    Field(
+        ge=config.height_lower_limit,
+        le=config.height_upper_limit,
+        description="Height, cm",
+    ),
+]
 
 
 class ParamRecord(SQLModel, table=True):
@@ -43,3 +65,14 @@ class ParamRecord(SQLModel, table=True):
     @property
     def muscle_weight(self) -> Weight | None:
         return None if not self.muscle_percent else self.weight * self.muscle_percent
+
+    def __str__(self) -> str:
+        return (
+            f"weight: {self.weight:.0f};"
+            + (f" fat weight: {self.fat_weight:.0f};" if self.fat_percent else "")
+            + (
+                f" muscle weight: {self.muscle_weight:.0f}"
+                if self.muscle_percent
+                else ""
+            )
+        )

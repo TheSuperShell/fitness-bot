@@ -11,6 +11,11 @@ class Config(BaseSettings):
     db_password: str = ""
     db_database: str = ""
 
+    weight_upper_limit: float = 500.0
+    weight_lower_limit: float = 1.0
+    height_upper_limit: float = 300.0
+    height_lower_limit: float = 1.0
+
     @property
     def db_url(self) -> str:
         return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_account}:5432/{self.db_database}"
