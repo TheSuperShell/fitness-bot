@@ -10,8 +10,9 @@ from api.routers import general_router, start_router, stats_router
 from config import config
 from db.session import async_engine, db_startup, session_maker
 from logger import get_logger, setup_logging
-from middleware.general import no_user_error, other_exceptions
-from models.user import NoUserError
+from middleware.general import other_exceptions
+from middleware.user import no_user_error, user_not_registered_error
+from models.user import NoUserError, UserNotRegisteredError
 
 
 async def startup_event(dispatcher: Dispatcher) -> None:
@@ -36,6 +37,11 @@ async def main() -> None:
     dp.error.register(
         no_user_error,
         ExceptionTypeFilter(NoUserError),
+        F.update.message,
+    )
+    dp.error.register(
+        user_not_registered_error,
+        ExceptionTypeFilter(UserNotRegisteredError),
         F.update.message,
     )
     dp.error.register(other_exceptions)

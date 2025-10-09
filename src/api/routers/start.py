@@ -6,7 +6,8 @@ from aiogram.methods import SendMessage
 from aiogram.types import Message
 
 from db.session import SessionMaker
-from services.user import get_or_create_user, get_telegram_user
+from models.user import User
+from services.user import create_user, get_telegram_user, get_user_if_exists
 
 router = Router(name=__name__)
 
@@ -16,8 +17,8 @@ async def start(
     message: Message, session_maker: SessionMaker, logger: Logger
 ) -> SendMessage:
     telegram_user = get_telegram_user(message)
-    user = await get_or_create_user(telegram_user, session_maker, logger)
-    logger.info(
-        f"loaded user {user.telegram_id}; amount of records: {len(user.records)}"
-    )
+    user: User | None = await get_user_if_exists(telegram_user, session_maker)
+    if not user:
+        user = await create_user(telegram_user, session_maker, logger, 170.0)
+        return message.answer(f"Hello, {user.full_name}")
     return message.answer(f"Hello, {user.full_name}")

@@ -13,9 +13,9 @@ from pydantic import ValidationError
 from config import config
 from db.session import SessionMaker
 from models.stats import ParamRecord
-from models.user import User
+from models.user import User, UserNotRegisteredError
 from services.stats import save_record
-from services.user import get_or_create_user, get_telegram_user
+from services.user import get_telegram_user, get_user_if_exists
 
 router = Router(name=__name__)
 
@@ -31,10 +31,11 @@ async def add_record(
     message: Message, state: FSMContext, session_maker: SessionMaker, logger: Logger
 ) -> SendMessage:
     telegram_user = get_telegram_user(message)
-    user: User = await get_or_create_user(telegram_user, session_maker, logger)
-    user_id: int = user.id if user.id else -1
+    user: User | None = await get_user_if_exists(telegram_user, session_maker)
+    if not user or not user.id:
+        raise UserNotRegisteredError(telegram_user.id)
     await state.clear()
-    await state.update_data(user_id=user_id, height=170.0)
+    await state.update_data(user_id=user.id, height=user.height)
     await state.set_state(RecordForm.enter_weight)
     return message.answer("Enter your current weight in kg")
 
