@@ -54,7 +54,7 @@ async def enter_weight(
         )
     await state.update_data(weight=weight)
     await state.set_state(RecordForm.enter_fat_p)
-    return message.answer("Enter fat %\. Enter `skip` if you don't want to record it")  # pyright: ignore[reportInvalidStringEscapeSequence]
+    return message.answer("Enter fat %\. Enter /skip if you don't want to record it")  # pyright: ignore[reportInvalidStringEscapeSequence]
 
 
 @router.message(RecordForm.enter_weight)
@@ -66,10 +66,12 @@ async def enter_weight_incorrect_format(message: Message) -> SendMessage:
 
 
 @router.message(RecordForm.enter_fat_p, F.text.casefold() == "skip")
+@router.message(RecordForm.enter_fat_p, Command("skip"))
 async def skip_fat_p(message: Message, state: FSMContext) -> SendMessage:
     await state.set_state(RecordForm.enter_muscle_p)
+    await state.update_data(fat_percent=None)
     return message.answer(
-        "Enter you muscle %\. Enter `skip` if you don't want to record it"  # pyright: ignore[reportInvalidStringEscapeSequence]
+        "Enter you muscle %\. Enter /skip if you don't want to record it"  # pyright: ignore[reportInvalidStringEscapeSequence]
     )
 
 
@@ -84,7 +86,7 @@ async def record_fat_p(
     await state.update_data(fat_percent=fat_p)
     await state.set_state(RecordForm.enter_muscle_p)
     return message.answer(
-        "Enter you muscle %\. Enter `skip` if you don't want to record it"  # pyright: ignore[reportInvalidStringEscapeSequence]
+        "Enter you muscle %\. Enter /skip if you don't want to record it"  # pyright: ignore[reportInvalidStringEscapeSequence]
     )
 
 
@@ -96,10 +98,11 @@ async def record_fat_p_incorrect_format(message: Message) -> SendMessage:
 
 
 @router.message(RecordForm.enter_muscle_p, F.text.casefold() == "skip")
+@router.message(RecordForm.enter_muscle_p, Command("skip"))
 async def skip_muscle_p(
     message: Message, state: FSMContext, logger: Logger, session_maker: SessionMaker
 ) -> SendMessage:
-    data = await state.get_data()
+    data = await state.update_data(muscle_percent=None)
     await state.clear()
     result = data_to_record(data, message, logger)
     if isinstance(result, SendMessage):
