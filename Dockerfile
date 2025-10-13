@@ -6,6 +6,7 @@ WORKDIR /bot
 
 COPY ./pyproject.toml .
 COPY ./uv.lock .
+COPY ./packages/ ./packages
 
 RUN uv sync --locked
 
