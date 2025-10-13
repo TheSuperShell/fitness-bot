@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
 from magic_filter import F
 
-from api.routers import general_router, start_router, stats_router
+from api.routers import general_router, start_router, stats_router, test_router
 from config import config
 from db.session import async_engine, db_startup, session_maker
 from logger import get_logger, setup_logging
@@ -33,7 +33,7 @@ async def main() -> None:
     dp = Dispatcher()
     dp.startup.register(startup_event)
     dp.shutdown.register(shutdown_event)
-    dp.include_routers(general_router, start_router, stats_router)
+    dp.include_routers(general_router, start_router, stats_router, test_router)
     dp.error.register(
         no_user_error,
         ExceptionTypeFilter(NoUserError),

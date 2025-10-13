@@ -7,8 +7,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.magic_filter import MagicFilter
 from pydantic import BaseModel, Field
 
-Hour = Annotated[int, Field(le=0, ge=23)]
-Minute = Annotated[int, Field(le=0, ge=59)]
+Hour = Annotated[int, Field(ge=0, le=23)]
+Minute = Annotated[int, Field(ge=0, le=59)]
 
 
 class TimeQuery(CallbackData, prefix="time"):
