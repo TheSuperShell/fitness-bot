@@ -5,7 +5,7 @@ from sqlalchemy import Column, DateTime
 from sqlmodel import Field, SQLModel
 
 from config import config
-from utils.time import current_timestamp
+from utils.time import current_timestamp_utc
 
 Weight = Annotated[
     float,
@@ -38,17 +38,17 @@ class ParamRecord(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id", ondelete="RESTRICT")
     created_at: datetime.datetime = Field(
         sa_column=Column(DateTime(timezone=True), nullable=False),
-        default_factory=current_timestamp,
+        default_factory=current_timestamp_utc,
     )
     measured_at: datetime.datetime = Field(
         sa_column=Column(DateTime(timezone=True), nullable=False),
-        default_factory=current_timestamp,
+        default_factory=current_timestamp_utc,
     )
     modified_at: datetime.datetime = Field(
         sa_column=Column(
-            DateTime(timezone=True), nullable=False, onupdate=current_timestamp
+            DateTime(timezone=True), nullable=False, onupdate=current_timestamp_utc
         ),
-        default_factory=current_timestamp,
+        default_factory=current_timestamp_utc,
     )
     deleted_at: datetime.datetime | None = Field(
         default=None, sa_column=Column(DateTime(timezone=True), nullable=True)

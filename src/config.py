@@ -16,6 +16,8 @@ class Config(BaseSettings):
     height_upper_limit: float = 300.0
     height_lower_limit: float = 1.0
 
+    google_timezone_api_key: str = ""
+
     @property
     def db_url(self) -> str:
         return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_account}:5432/{self.db_database}"

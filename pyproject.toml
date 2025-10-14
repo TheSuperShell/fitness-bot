@@ -15,7 +15,10 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.43",
     "sqlmodel>=0.0.25",
     "watchdog>=6.0.0",
-    "aiogram-timepicker"
+    "aiogram-timepicker",
+    "pytz>=2025.2",
+    "tzwhere>=3.0.3",
+    "requests>=2.32.5",
 ]
 
 [tool.ruff.lint]
@@ -36,7 +39,10 @@ ignore_missing_imports = true
 aiogram-timepicker = { workspace = true }
 
 [tool.uv.workspace]
-members = ["packages/aiogram-timepicker"]
+members = [
+    "packages/aiogram-timepicker",
+    "packages/timezone-parser",
+]
 
 [dependency-groups]
 dev = [

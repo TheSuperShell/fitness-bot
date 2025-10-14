@@ -25,7 +25,11 @@ async def get_user_if_exists(
 
 
 async def create_user(
-    telegram_user: TUser, sessionmaker: SessionMaker, logger: Logger, height: Height
+    telegram_user: TUser,
+    sessionmaker: SessionMaker,
+    logger: Logger,
+    height: Height,
+    timezone: str,
 ) -> User:
     async with sessionmaker() as session:
         res = await session.execute(
@@ -42,6 +46,7 @@ async def create_user(
             first_name=telegram_user.first_name,
             last_name=telegram_user.last_name,
             height=height,
+            timezone=timezone,
         )
         session.add(user)
         await session.commit()
