@@ -1,6 +1,6 @@
 FROM python:3.12-trixie AS builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.9.2 /uv /uvx /bin/
 
 WORKDIR /bot
 
