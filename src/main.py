@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
+from aiogram.utils.chat_action import ChatActionMiddleware
 from magic_filter import F
 
 from api.routers import general_router, start_router, stats_router, test_router
@@ -45,6 +46,7 @@ async def main() -> None:
         F.update.message,
     )
     dp.error.register(other_exceptions)
+    dp.message.middleware(ChatActionMiddleware())
     bot = Bot(
         token=config.bot_api_key,
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
