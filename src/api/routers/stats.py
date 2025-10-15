@@ -2,12 +2,13 @@ from logging import Logger
 from re import Match
 from typing import Any
 
-from aiogram import F, Router
+from aiogram import Bot, F, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.methods import SendMessage
-from aiogram.types import Message
+from aiogram.types import CallbackQuery, Message
+from aiogram_timepicker.main import TimePickerBuilder, TimeQuery
 from pydantic import ValidationError
 
 from config import config
@@ -16,14 +17,18 @@ from models.stats import ParamRecord
 from models.user import User, UserNotRegisteredError
 from services.stats import save_record
 from services.user import get_telegram_user, get_user_if_exists
+from utils.time import current_timestamp_utc
 
 router = Router(name=__name__)
+
+time_picker_builder = TimePickerBuilder(name="stats")
 
 
 class RecordForm(StatesGroup):
     enter_weight = State()
     enter_fat_p = State()
     enter_muscle_p = State()
+    enter_time = State()
 
 
 @router.message(Command("add_record"))
@@ -35,9 +40,42 @@ async def add_record(
     if not user or not user.id:
         raise UserNotRegisteredError(telegram_user.id)
     await state.clear()
-    await state.update_data(user_id=user.id, height=user.height)
+    await state.update_data(user_id=user.id, height=user.height, timezone=user.timezone)
+    await state.set_state(RecordForm.enter_time)
+    time_picker = time_picker_builder.build_from_timestamp_tz(
+        user.timestamp_in_users_timezone(current_timestamp_utc())
+    )
+    return message.answer(
+        "Please choose the record time",
+        reply_markup=time_picker.get_keyboard(),
+    )
+
+
+@router.callback_query(RecordForm.enter_time, time_picker_builder.ok_filter())
+async def ok_time(
+    query: CallbackQuery, callback_data: TimeQuery, state: FSMContext, logger: Logger
+) -> SendMessage:
+    if not query.message:
+        raise ValueError("no message")
+    timezone = (await state.get_data())["timezone"]
+    logger.debug(f"{callback_data.get_datetime_today_utc(timezone)}")
+    await state.update_data(measured_at=callback_data.get_datetime_today_utc(timezone))
     await state.set_state(RecordForm.enter_weight)
-    return message.answer("Enter your current weight in kg")
+    return query.message.answer("Please enter your weight messurement in kg")
+
+
+@router.callback_query(RecordForm.enter_time, time_picker_builder.filter())
+async def switch_time(
+    query: CallbackQuery, callback_data: TimeQuery, bot: Bot, state: FSMContext
+) -> None:
+    time_picker = time_picker_builder.build_from_callback(callback_data)
+    if not query.message:
+        return
+    await bot.edit_message_reply_markup(
+        chat_id=query.message.chat.id,
+        message_id=query.message.message_id,
+        reply_markup=time_picker.get_keyboard(),
+    )
 
 
 @router.message(

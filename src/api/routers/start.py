@@ -95,7 +95,8 @@ async def timezone_from_gmt(
     )
     logger.info(f"created new user for telegram id {user.telegram_id}")
     return message.answer(
-        f"Your timezone is set to be {user.timezone.replace('+', '\+')}\n"
+        f"Your timezone is set to be "
+        f"{user.timezone.replace('+', '\+').replace('-', '\-')}\n"
         f"Welcome {user.full_name}\!",
         reply_markup=ReplyKeyboardRemove(),
     )

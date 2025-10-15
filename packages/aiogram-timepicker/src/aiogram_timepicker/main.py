@@ -1,6 +1,7 @@
 import datetime
 from typing import Annotated
 
+import pytz
 from aiogram import F
 from aiogram.filters.callback_data import CallbackData, CallbackQueryFilter
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -17,8 +18,31 @@ class TimeQuery(CallbackData, prefix="time"):
     minute: Minute
     ok: bool = Field(default=False)
 
+    def get_datetime_today_utc(self, timezone: str = "UTC") -> datetime.datetime:
+        """get the datetime from the selected hour and minute converted
+        from the sepcified timezone into UTC
+
+        Args:
+            timezone (str, optional): timezone of the selected time. Defaults to "UTC".
+
+        Returns:
+            datetime.datetime: datetime object for the selected time
+            (the date is `today` in local timezone) converted into UTC
+        """
+        tz = pytz.timezone(timezone)
+        dt = datetime.datetime.combine(
+            datetime.datetime.now(tz).date(), datetime.time(self.hour, self.minute)
+        )
+        dt_local = tz.localize(dt)
+        return dt_local.astimezone(pytz.UTC)
+
 
 class TimePicker(BaseModel, frozen=True):
+    """
+    This is a timepicker generator class with a local (timezone specific) hour
+    and minute
+    """
+
     name: str
     hour: Hour
     minute: Minute
@@ -105,7 +129,15 @@ class TimePickerBuilder(BaseModel):
     def ok_filter(self) -> CallbackQueryFilter:
         return TimeQuery.filter((F.name == self.name) & (F.ok))
 
-    def build_from_timestamp(self, timestamp: datetime.datetime) -> TimePicker:
+    def build_from_timestamp_tz(self, timestamp: datetime.datetime) -> TimePicker:
+        """build a timepicker from the timestamp with the local timezone
+
+        Args:
+            timestamp (datetime.datetime): timestamp with tz
+
+        Returns:
+            TimePicker: TimePicker with the hour and minute from the timestamp
+        """
         return TimePicker(name=self.name, hour=timestamp.hour, minute=timestamp.minute)
 
     def build_from_callback(self, callback_data: TimeQuery) -> TimePicker:

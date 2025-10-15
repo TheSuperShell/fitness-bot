@@ -13,7 +13,7 @@ time_picker_builder = TimePickerBuilder(name="test")
 
 @router.message(Command("test_time"))
 def test_time(message: Message) -> SendMessage:
-    time_picker = time_picker_builder.build_from_timestamp(
+    time_picker = time_picker_builder.build_from_timestamp_tz(
         datetime.datetime.now(datetime.UTC)
     )
     return message.answer("Hello", reply_markup=time_picker.get_keyboard())

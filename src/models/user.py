@@ -72,3 +72,8 @@ class User(SQLModel, table=True):
         if value not in pytz.all_timezones_set:
             raise ValueError(f"timezone {value} if not a valid timezone")
         return value
+
+    def timestamp_in_users_timezone(
+        self, timestamp: datetime.datetime
+    ) -> datetime.datetime:
+        return timestamp.astimezone(pytz.timezone(self.timezone))
