@@ -35,6 +35,9 @@ select = [
 pretty = true
 ignore_missing_imports = true
 
+[tool.pyright]
+reportInvalidStringEscapeSequence = "none"
+
 [tool.uv.sources]
 aiogram-timepicker = { workspace = true }
 
