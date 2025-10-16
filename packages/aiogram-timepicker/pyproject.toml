@@ -9,7 +9,8 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "aiogram>=3.22.0",
-    "pydantic>=2.11.9"
+    "pydantic>=2.11.9",
+    "pytz>=2025.2",
 ]
 
 [build-system]
