@@ -11,13 +11,13 @@ from aiogram.types import CallbackQuery, Message
 from aiogram_timepicker.main import TimePickerBuilder, TimeQuery
 from pydantic import ValidationError
 
-from config import config
-from db.session import SessionMaker
-from models.stats import ParamRecord
-from models.user import User, UserNotRegisteredError
-from services.stats import save_record
-from services.user import get_telegram_user, get_user_if_exists
-from utils.time import current_timestamp_utc
+from ...config import config
+from ...db.session import SessionMaker
+from ...models.stats import ParamRecord
+from ...models.user import User, UserNotRegisteredError
+from ...services.stats import save_record
+from ...services.user import get_telegram_user, get_user_if_exists
+from ...utils.time import current_timestamp_utc
 
 router = Router(name=__name__)
 

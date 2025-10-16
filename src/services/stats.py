@@ -1,5 +1,5 @@
-from db.session import SessionMaker
-from models.stats import ParamRecord
+from ..db.session import SessionMaker
+from ..models.stats import ParamRecord
 
 
 async def save_record(session_maker: SessionMaker, record: ParamRecord) -> ParamRecord:

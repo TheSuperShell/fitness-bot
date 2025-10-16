@@ -4,7 +4,7 @@ import time
 import requests
 from aiogram.types import Location
 
-from config import config
+from ..config import config
 
 
 class TimezoneApiError(Exception):

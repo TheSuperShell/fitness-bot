@@ -15,11 +15,11 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 
-from config import config
-from db.session import SessionMaker
-from models.user import User
-from services.user import create_user, get_telegram_user, get_user_if_exists
-from utils.time import TimezoneApiError, get_timezone_from_location
+from ...config import config
+from ...db.session import SessionMaker
+from ...models.user import User
+from ...services.user import create_user, get_telegram_user, get_user_if_exists
+from ...utils.time import TimezoneApiError, get_timezone_from_location
 
 router = Router(name=__name__)
 

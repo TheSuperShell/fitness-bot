@@ -3,9 +3,9 @@ from logging import Logger
 from aiogram.types import Message
 from sqlmodel import select
 
-from db.session import SessionMaker
-from models.stats import Height
-from models.user import NoUserError, TUser, User, UserAlreadyExistsError
+from ..db.session import SessionMaker
+from ..models.stats import Height
+from ..models.user import NoUserError, TUser, User, UserAlreadyExistsError
 
 
 def get_telegram_user(message: Message) -> TUser:

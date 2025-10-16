@@ -4,8 +4,8 @@ from typing import Annotated
 from sqlalchemy import Column, DateTime
 from sqlmodel import Field, SQLModel
 
-from config import config
-from utils.time import current_timestamp_utc
+from ..config import config
+from ..utils.time import current_timestamp_utc
 
 Weight = Annotated[
     float,

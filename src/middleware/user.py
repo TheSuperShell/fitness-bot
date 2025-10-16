@@ -3,7 +3,7 @@ from logging import Logger
 from aiogram.methods.send_message import SendMessage
 from aiogram.types import ErrorEvent
 
-from models.user import UserNotRegisteredError
+from ..models.user import UserNotRegisteredError
 
 
 async def no_user_error(event: ErrorEvent, logger: Logger) -> SendMessage | None:

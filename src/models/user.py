@@ -7,8 +7,8 @@ from pydantic import field_validator
 from sqlalchemy import DateTime
 from sqlmodel import Column, Field, Relationship, SQLModel
 
-from models.stats import Height, ParamRecord
-from utils.time import current_timestamp_utc
+from ..models.stats import Height, ParamRecord
+from ..utils.time import current_timestamp_utc
 
 type TUser = TelegramUser
 TelegramId = Annotated[int, Field()]

@@ -4,18 +4,17 @@ services:
   bot:
     build:
       context: .
+    restart: on-failure
+    ports:
+      - 8000:8000
     volumes:
       - ./logs:/bot/logs
-      # - ./src:/bot/src
+      - ./src:/bot/src
     env_file:
       - ./.env
     depends_on:
       - db
-    develop:
-      watch:
-        - action: sync+restart
-          path: ./src
-          target: /bot/src
+      - ngrok
   db:
     image: postgres
     restart: on-failure
@@ -27,6 +26,20 @@ services:
       - 5432:5432
     volumes:
       - botdata:/var/lib/postgresql/data
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "http"
+      - "http://host.docker.internal:8000"
+      - "--url"
+      - "https://biocentric-sherrill-glamorously.ngrok-free.dev"
+    ports:
+      - 4040:4040
+    env_file:
+      - ./.env
+
+
     
 volumes:
   botdata:

@@ -1,58 +1,49 @@
-import asyncio
+import logging
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
+from typing import Annotated
 
-from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.filters import ExceptionTypeFilter
-from aiogram.utils.chat_action import ChatActionMiddleware
-from magic_filter import F
+from aiogram.methods import TelegramMethod
+from aiogram.types import Update
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
 
-from api.routers import general_router, start_router, stats_router, test_router
-from config import config
-from db.session import async_engine, db_startup, session_maker
-from logger import get_logger, setup_logging
-from middleware.general import other_exceptions
-from middleware.user import no_user_error, user_not_registered_error
-from models.user import NoUserError, UserNotRegisteredError
+from .bot import setup, shutdown_event, startup_event
+from .config import config
+from .logger import get_logger
+
+dp, bot = setup()
 
 
-async def startup_event(dispatcher: Dispatcher) -> None:
-    dispatcher["log_listener"] = setup_logging()
-    dispatcher["logger"] = get_logger()
-    dispatcher["session_maker"] = session_maker
-    await db_startup()
-    dispatcher["logger"].info("startup completed")
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    await startup_event(dp, bot)
+    yield
+    await shutdown_event(dp)
 
 
-async def shutdown_event(dispatcher: Dispatcher) -> None:
-    dispatcher["log_listener"].stop()
-    await async_engine.dispose()
-    dispatcher["logger"].info("shutown completed")
+app = FastAPI(lifespan=lifespan)
 
 
-async def main() -> None:
-    dp = Dispatcher()
-    dp.startup.register(startup_event)
-    dp.shutdown.register(shutdown_event)
-    dp.include_routers(general_router, start_router, stats_router, test_router)
-    dp.error.register(
-        no_user_error,
-        ExceptionTypeFilter(NoUserError),
-        F.update.message,
-    )
-    dp.error.register(
-        user_not_registered_error,
-        ExceptionTypeFilter(UserNotRegisteredError),
-        F.update.message,
-    )
-    dp.error.register(other_exceptions)
-    dp.message.middleware(ChatActionMiddleware())
-    bot = Bot(
-        token=config.bot_api_key,
-        default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
-    )
-    await dp.start_polling(bot)
+@app.get("/")
+async def hello_world() -> str:
+    return "Hello, World!"
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+@app.post(config.webhook_path)
+async def webhook_post(
+    request: Request,
+    logger: Annotated[logging.Logger, Depends(get_logger)],
+    x_telegram_bot_api_secret_token: Annotated[str | None, Header()] = None,
+) -> dict:
+    logger.info("got post request")
+    if x_telegram_bot_api_secret_token != config.webhook_secret:
+        logger.warning("unauthorised access")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="used the incorrect webhook secret",
+        )
+    update: Update = Update.model_validate(await request.json())
+    response = await dp.feed_update(bot, update)
+    if isinstance(response, TelegramMethod):
+        await bot(response)
+    return {"ok": True}

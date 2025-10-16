@@ -18,6 +18,14 @@ class Config(BaseSettings):
 
     google_timezone_api_key: str = ""
 
+    web_url: str = ""
+    webhook_path: str = "/bot"
+    webhook_secret: str = ""
+
+    @property
+    def webhook_url(self) -> str:
+        return f"{self.web_url}{self.webhook_path}"
+
     @property
     def db_url(self) -> str:
         return f"postgresql+asyncpg://{self.db_user}:{self.db_password}@{self.db_account}:5432/{self.db_database}"

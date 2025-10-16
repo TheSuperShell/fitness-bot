@@ -23,4 +23,6 @@ COPY ./packages ./packages
 
 ENV PATH="/bot/.venv/bin:$PATH"
 
-CMD [ "python", "src/main.py" ]
+EXPOSE 8000
+
+CMD [ "fastapi", "dev", "--host", "0.0.0.0",  "src/main.py" ]
