@@ -16,7 +16,8 @@ dp, bot = setup()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    await startup_event(dp, bot)
+    await bot.set_webhook(config.webhook_url, secret_token=config.webhook_secret)
+    await startup_event(dp)
     yield
     await shutdown_event(dp)
 
@@ -40,7 +41,7 @@ async def webhook_post(
         logger.warning("unauthorised access")
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="used the incorrect webhook secret",
+            detail="access denied",
         )
     update: Update = Update.model_validate(await request.json())
     response = await dp.feed_update(bot, update)

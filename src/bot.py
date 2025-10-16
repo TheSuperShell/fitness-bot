@@ -13,8 +13,7 @@ from .middleware.user import no_user_error, user_not_registered_error
 from .models.user import NoUserError, UserNotRegisteredError
 
 
-async def startup_event(dispatcher: Dispatcher, bot: Bot) -> None:
-    await bot.set_webhook(config.webhook_url, secret_token=config.webhook_secret)
+async def startup_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"] = setup_logging()
     dispatcher["logger"] = get_logger()
     dispatcher["session_maker"] = session_maker
@@ -50,10 +49,3 @@ def setup() -> tuple[Dispatcher, Bot]:
         default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
     )
     return dp, bot
-
-
-#     await dp.start_polling(bot)
-
-
-# if __name__ == "__main__":
-#     asyncio.run(main())

@@ -6,5 +6,6 @@
 .pytest_cache
 README.md
 Dockerfile
+fockerfiles/
 docker-compose.yml
 logs/

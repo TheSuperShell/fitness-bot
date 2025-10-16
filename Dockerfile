@@ -23,6 +23,4 @@ COPY ./packages ./packages
 
 ENV PATH="/bot/.venv/bin:$PATH"
 
-EXPOSE 8000
-
-CMD [ "fastapi", "dev", "--host", "0.0.0.0",  "src/main.py" ]
+CMD [ "python", "-m", "src.longpooling" ]
