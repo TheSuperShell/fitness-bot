@@ -1,7 +1,7 @@
 version: "2.39.2"
 
 services:
-  bot_longpooling:
+  bot_longpolling:
     build:
       context: .
     restart: on-failure

@@ -23,4 +23,4 @@ COPY ./packages ./packages
 
 ENV PATH="/bot/.venv/bin:$PATH"
 
-CMD [ "python", "-m", "src.longpooling" ]
+CMD [ "python", "-m", "src.longpolling" ]

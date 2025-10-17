@@ -37,6 +37,7 @@ ignore_missing_imports = true
 
 [tool.pyright]
 reportInvalidStringEscapeSequence = "none"
+typeCheckingMode = "standard"
 
 [tool.uv.sources]
 aiogram-timepicker = { workspace = true }
