@@ -43,16 +43,19 @@ typeCheckingMode = "standard"
 [tool.uv.sources]
 aiogram-timepicker = { workspace = true }
 message-loader = { workspace = true }
+message-loader-tools = { workspace = true }
 
 [tool.uv.workspace]
 members = [
     "packages/aiogram-timepicker",
     "packages/timezone-parser",
     "packages/message-loader",
+    "tools/message_loader_tools",
 ]
 
 [dependency-groups]
 dev = [
+    "message-loader-tools",
     "mypy>=1.18.2",
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
