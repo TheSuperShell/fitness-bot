@@ -19,6 +19,7 @@ dependencies = [
     "tzwhere>=3.0.3",
     "requests>=2.32.5",
     "fastapi[standard]>=0.119.0",
+    "message-loader",
 ]
 
 [tool.ruff.lint]
@@ -41,11 +42,13 @@ typeCheckingMode = "standard"
 
 [tool.uv.sources]
 aiogram-timepicker = { workspace = true }
+message-loader = { workspace = true }
 
 [tool.uv.workspace]
 members = [
     "packages/aiogram-timepicker",
     "packages/timezone-parser",
+    "packages/message-loader",
 ]
 
 [dependency-groups]

@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 members = [
     "aiogram-timepicker",
     "fitness-bot",
+    "message-loader",
 ]
 
 [[package]]
@@ -454,6 +455,7 @@ dependencies = [
     { name = "asyncpg" },
     { name = "fastapi", extra = ["standard"] },
     { name = "magic-filter" },
+    { name = "message-loader" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
     { name = "python-dotenv" },
@@ -480,6 +482,7 @@ requires-dist = [
     { name = "asyncpg", specifier = ">=0.30.0" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.119.0" },
     { name = "magic-filter", specifier = ">=1.0.12" },
+    { name = "message-loader", editable = "packages/message-loader" },
     { name = "pydantic", specifier = ">=2.11.9" },
     { name = "pydantic-settings", specifier = ">=2.11.0" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
@@ -808,6 +811,17 @@ sdist = { url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec9
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8", size = 9979, upload-time = "2022-08-14T12:40:09.779Z" },
 ]
+
+[[package]]
+name = "message-loader"
+version = "0.1.0"
+source = { editable = "packages/message-loader" }
+dependencies = [
+    { name = "jinja2" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "jinja2", specifier = ">=3.1.6" }]
 
 [[package]]
 name = "multidict"
