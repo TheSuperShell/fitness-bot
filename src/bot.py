@@ -3,6 +3,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.utils.chat_action import ChatActionMiddleware
+from message_loader.main import MessageLoader
 
 from .api.routers import general_router, start_router, stats_router, test_router
 from .config import config
@@ -17,6 +18,7 @@ async def startup_event(dispatcher: Dispatcher) -> None:
     dispatcher["log_listener"] = setup_logging()
     dispatcher["logger"] = get_logger()
     dispatcher["session_maker"] = session_maker
+    dispatcher["message_loader"] = MessageLoader("static/messages/messages.json")
     await db_startup()
     dispatcher["logger"].info("startup completed")
 

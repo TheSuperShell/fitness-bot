@@ -20,6 +20,7 @@ WORKDIR /bot
 COPY --from=builder /bot/.venv .venv
 COPY ./src ./src
 COPY ./packages ./packages
+COPY ./static ./static
 
 ENV PATH="/bot/.venv/bin:$PATH"
 

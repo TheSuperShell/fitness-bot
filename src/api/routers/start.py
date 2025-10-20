@@ -14,6 +14,7 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+from message_loader.main import MessageLoader
 
 from ...config import config
 from ...db.session import SessionMaker
@@ -31,7 +32,10 @@ class StartStates(StatesGroup):
 
 @router.message(CommandStart())
 async def start(
-    message: Message, session_maker: SessionMaker, state: FSMContext
+    message: Message,
+    session_maker: SessionMaker,
+    state: FSMContext,
+    message_loader: MessageLoader,
 ) -> SendMessage:
     telegram_user = get_telegram_user(message)
     user: User | None = await get_user_if_exists(telegram_user, session_maker)
@@ -40,7 +44,7 @@ async def start(
         await state.update_data(telegram_user=telegram_user)
         await state.set_state(StartStates.EnterHeight)
         return message.answer("Please enter your current height in cm:")
-    return message.answer(f"Hello, {user.full_name}")
+    return message.answer(message_loader.render_msg("hello_user", name=user.full_name))
 
 
 @router.message(
@@ -84,6 +88,7 @@ async def timezone_from_gmt(
     session_maker: SessionMaker,
     logger: Logger,
     gmt: Match[str],
+    message_loader: MessageLoader,
 ) -> SendMessage:
     if abs(int(gmt.string)) > 12:
         return message.answer("The specified GMT should be between \-12 and \+12")
@@ -95,9 +100,7 @@ async def timezone_from_gmt(
     )
     logger.info(f"created new user for telegram id {user.telegram_id}")
     return message.answer(
-        f"Your timezone is set to be "
-        f"{user.timezone.replace('+', '\+').replace('-', '\-')}\n"
-        f"Welcome {user.full_name}\!",
+        message_loader.render_msg("hello_user", name=user.full_name),
         reply_markup=ReplyKeyboardRemove(),
     )
 
