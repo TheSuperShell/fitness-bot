@@ -1,4 +1,6 @@
 {
+    "error_no_user": "No user found",
+    "warn_user_not_registered": "Please register your account by pressing /start before moving on",
     
     "start_welcome": "Welcome, {{name}}!",
     "start_height": "Please enter your current <b>height</b> in cm",
