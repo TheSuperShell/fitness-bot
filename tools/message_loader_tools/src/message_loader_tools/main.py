@@ -20,7 +20,7 @@ app = typer.Typer(
 def get_vars(
     messages_path: Annotated[Path, typer.Argument()],
     msg_id: Annotated[str, typer.Argument()],
-) -> typer.Exit | None:
+) -> typer.Exit:
     try:
         message_loader = MessageLoader(messages_path)
     except MessagesFileNotExistsError:
@@ -40,3 +40,4 @@ def get_vars(
     rich.print("Variables:")
     for var in variables:
         rich.print(f"- [blue bold]{var}[/blue bold]")
+    return typer.Exit()

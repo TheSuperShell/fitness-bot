@@ -40,6 +40,13 @@ ignore_missing_imports = true
 reportInvalidStringEscapeSequence = "none"
 typeCheckingMode = "standard"
 
+[tool.coverage.run]
+omit = [
+    "*/tests/*",
+    "**/__init__.py"
+]
+
+
 [tool.uv.sources]
 aiogram-timepicker = { workspace = true }
 message-loader = { workspace = true }
@@ -60,4 +67,6 @@ dev = [
     "pytest>=8.4.2",
     "pytest-cov>=7.0.0",
     "pytest-xdist>=3.8.0",
+    "types-pytz>=2025.2.0.20250809",
+    "types-requests>=2.32.4.20250913",
 ]

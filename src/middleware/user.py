@@ -22,7 +22,7 @@ async def user_not_registered_error(
     event: ErrorEvent, logger: Logger, message_loader: MessageLoader
 ) -> SendMessage | None:
     if not isinstance(event.exception, UserNotRegisteredError):
-        return
+        return None
     logger.warning(f"user {event.exception.telegram_id} is not registered")
     return (
         event.update.message.answer(
