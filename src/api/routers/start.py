@@ -43,7 +43,7 @@ async def start(
         await state.clear()
         await state.update_data(telegram_user=telegram_user)
         await state.set_state(StartStates.EnterHeight)
-        return message.answer("Please enter your current height in cm:")
+        return message.answer(message_loader.render_msg("start_height"))
     return message.answer(message_loader.render_msg("hello_user", name=user.full_name))
 
 
@@ -54,20 +54,21 @@ async def get_height(
     message: Message,
     state: FSMContext,
     height_m: Match[str],
+    message_loader: MessageLoader,
 ) -> SendMessage:
     height: float = float(height_m.string)
     if height < config.height_lower_limit or height > config.height_upper_limit:
         return message.answer(
-            f"Height must be between {config.height_lower_limit:.0f} "
-            f"and {config.height_upper_limit:.0f} cm"
+            message_loader.render_msg(
+                "start_height_incorrect",
+                min_height=config.height_lower_limit,
+                max_height=config.height_upper_limit,
+            )
         )
     await state.update_data(height=height)
     await state.set_state(StartStates.EnterTimezone)
     return message.answer(
-        "Now we need to learn your timezone\. "
-        "Please share your location "
-        "\(we will only save your timezone based on the location\) "
-        "or text a GMT hour offset, for example `\+9` for GMT\+9 or `\-0` for UTC",
+        message_loader.render_msg("start_timezone"),
         reply_markup=ReplyKeyboardMarkup(
             keyboard=[[KeyboardButton(text="Share my Location", request_location=True)]]
         ),
@@ -75,10 +76,8 @@ async def get_height(
 
 
 @router.message(StartStates.EnterHeight)
-def incorrect_height(message: Message) -> SendMessage:
-    return message.answer(
-        "Please enter your weight in the correct format, for example 175"
-    )
+def incorrect_height(message: Message, message_loader: MessageLoader) -> SendMessage:
+    return message.answer(message_loader.render_msg("start_height_incorrect_format"))
 
 
 @router.message(StartStates.EnterTimezone, F.text.regexp(r"^[\+-]\d{1,2}$").as_("gmt"))
@@ -91,7 +90,7 @@ async def timezone_from_gmt(
     message_loader: MessageLoader,
 ) -> SendMessage:
     if abs(int(gmt.string)) > 12:
-        return message.answer("The specified GMT should be between \-12 and \+12")
+        return message.answer(message_loader.render_msg("start_gmt_incorrect"))
     timezone: str = "Etc/GMT" + gmt.string
     data: dict[str, Any] = await state.get_data()
     await state.clear()
@@ -100,7 +99,7 @@ async def timezone_from_gmt(
     )
     logger.info(f"created new user for telegram id {user.telegram_id}")
     return message.answer(
-        message_loader.render_msg("hello_user", name=user.full_name),
+        message_loader.render_msg("start_welcome", name=user.full_name),
         reply_markup=ReplyKeyboardRemove(),
     )
 
@@ -112,6 +111,7 @@ async def timezone_from_location(
     session_maker: SessionMaker,
     logger: Logger,
     location: Location,
+    message_loader: MessageLoader,
 ) -> SendMessage:
     timezone: str
     try:
@@ -119,7 +119,7 @@ async def timezone_from_location(
     except TimezoneApiError as e:
         logger.error(f"timezone api error: {e}")
         return message.answer(
-            "Could not get your timezone, please enter it manually",
+            message_loader.render_msg("start_timezone_erroe"),
             reply_markup=ReplyKeyboardRemove(),
         )
     data: dict[str, Any] = await state.get_data()
@@ -130,15 +130,15 @@ async def timezone_from_location(
     )
     logger.info(f"created new user for telegram id {user.telegram_id}")
     return message.answer(
-        f"Your timezone is set to be {user.timezone}\nWelcome {user.full_name}\!",
+        message_loader.render_msg("start_welcome", name=user.full_name),
         reply_markup=ReplyKeyboardRemove(),
     )
 
 
 @router.message(StartStates.EnterTimezone)
-def no_location(message: Message) -> SendMessage:
+def no_location(message: Message, message_loader: MessageLoader) -> SendMessage:
     return message.answer(
-        "Please send a location or specify the correct GMT, for example \+9",
+        message_loader.render_msg("start_timezone_incorrect_format"),
         reply_markup=ReplyKeyboardMarkup(
             keyboard=[[KeyboardButton(text="Share my Location", request_location=True)]]
         ),

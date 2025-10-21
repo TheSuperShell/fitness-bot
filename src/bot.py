@@ -48,6 +48,6 @@ def setup() -> tuple[Dispatcher, Bot]:
     dp.message.middleware(ChatActionMiddleware())
     bot = Bot(
         token=config.bot_api_key,
-        default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN_V2),
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     return dp, bot

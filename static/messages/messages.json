@@ -1,3 +1,16 @@
 {
-    "hello_user": "Welcome, {{name}}"
+    
+    "start_welcome": "Welcome, {{name}}!",
+    "start_height": "Please enter your current <b>height</b> in cm",
+    "start_height_incorrect": "Height must be between {{min_height|round(1)}} and {{max_height|round(1)}} cm",
+    "start_height_incorrect_format": "Please enter your height in the correct format, for example 175",
+    "start_timezone": "Now we need to learn your timezone. Please share your location (we will only save your timezone based on this location) or text a GMT hour offset, for example +9 or -9",
+    "start_gmt_incorrect": "GMT should be between -12 and +12",
+    "start_timezone_error": "Could not get your timezone, please enter GMT hour offset",
+    "start_timezone_incorrect_format": "Please send a location or specify the correct GMT, for example +9",
+    
+    
+
+
+    "": ""
 }
