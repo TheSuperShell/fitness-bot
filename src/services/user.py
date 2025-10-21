@@ -5,7 +5,13 @@ from sqlmodel import select
 
 from ..db.session import SessionMaker
 from ..models.stats import Height
-from ..models.user import NoUserError, TUser, User, UserAlreadyExistsError
+from ..models.user import (
+    NoUserError,
+    TUser,
+    User,
+    UserAlreadyExistsError,
+    UserNotRegisteredError,
+)
 
 
 def get_telegram_user(message: Message) -> TUser:
@@ -22,6 +28,18 @@ async def get_user_if_exists(
             select(User).where(User.telegram_id == telegram_user.id)
         )
         return res.scalar_one_or_none()
+
+
+async def get_user(message: Message, session_maker: SessionMaker) -> User:
+    telegram_user: TUser = get_telegram_user(message)
+    async with session_maker() as session:
+        res = await session.execute(
+            select(User).where(User.telegram_id == telegram_user.id)
+        )
+        user = res.scalar_one_or_none()
+        if not user:
+            raise UserNotRegisteredError(telegram_user.id)
+        return user
 
 
 async def create_user(

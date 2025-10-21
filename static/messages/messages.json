@@ -8,6 +8,16 @@
     "start_gmt_incorrect": "GMT should be between -12 and +12",
     "start_timezone_error": "Could not get your timezone, please enter GMT hour offset",
     "start_timezone_incorrect_format": "Please send a location or specify the correct GMT, for example +9",
+
+    "stats_time": "Please choose record time",
+    "stats_weight": "Please enter your weight in kg",
+    "stats_weight_incorrect": "Weight should be between {{min_weight|round(1)}} and {{ max_weight|round(1) }} kg",
+    "stats_weight_incorrect_format": "Please enter weight in a correct format, like <b>100</b> or <b>100.05</b> or <b>100,05</b>",
+    "stats_fat": "Enter fat %. Enter /skip if you don't want to record it",
+    "stats_fat_incorrect_format": "Please enter fat % in a correct format, like 25 or 0.25 or 0,25",
+    "stats_muscle": "Enter your muscle %. Enter /skip if you don't want to record it",
+    "stats_muscle_incorrect_format": "Please enter muscle % in a correct format, like 25 or 0.25 or 0,25",
+    "stats_record_save": "Record <u>{{ record_data }}</u> has been saved",
     
     
 
