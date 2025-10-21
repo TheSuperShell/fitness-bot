@@ -9,7 +9,13 @@ COPY ./uv.lock .
 COPY ./packages/ ./packages
 COPY ./tools ./tools
 
-RUN uv sync --locked --no-dev
+ARG USE_WEBHOOK=false
+
+RUN if [ ${USE_WEBHOOK} = true ]; then \
+    uv sync --locked --no-dev --group webhook; else \
+    uv sync --locked --no-dev; \
+fi
+
 
 FROM python:3.12-slim-trixie AS production
 
